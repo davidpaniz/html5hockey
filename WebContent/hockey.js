@@ -1,7 +1,15 @@
-function Circle(x, y, color) {
+function Circle(x, y, size, color) {
     this.x = x;
     this.y = y;
+    this.size = size;
     this.color = color;
+    this.draw = function(ctx){
+    	ctx.beginPath();
+    	ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI, true);
+    	ctx.fillStyle = color;
+    	ctx.fill();
+    };
+    
 };
 
 var Size = {
@@ -29,9 +37,9 @@ var Hockey = {
     circleSize: 20,
     puckSize: 5,
     ws: null,
-    player1: new Circle(Size.center(Size.width, Size.player), Size.initialY(true), "red"),
-    player2: new Circle(Size.center(Size.width, Size.player), Size.initialY(false), "blue"),
-    puck: new Circle(Size.center(Size.width, Size.puck), Size.center(Size.height, Size.player), "black"),
+    player1: new Circle(Size.center(Size.width, Size.player), Size.initialY(true), Size.player, "red"),
+    player2: new Circle(Size.center(Size.width, Size.player), Size.initialY(false), Size.player, "blue"),
+    puck: new Circle(Size.center(Size.width, Size.puck), Size.center(Size.height, Size.player), Size.puck, "black"),
 
     rink:  null,
     context: null,
@@ -72,20 +80,14 @@ var Hockey = {
         Hockey.player1.y = mousePos.y;
     },
 
-    drawCircle: function(x, y, size, color){
-        Hockey.context.beginPath();
-        Hockey.context.arc(x, y, size, 0, 2 * Math.PI, true);
-        Hockey.context.fillStyle = color;
-        Hockey.context.fill();
-    },
+
 
     draw: function() {
         Hockey.clear();
         //console.log(Hockey.player1);
-        Hockey.drawCircle(Hockey.player1.x, Hockey.player1.y, Hockey.circleSize, Hockey.player1.color);
-        Hockey.drawCircle(Hockey.player2.x, Hockey.player2.y, Hockey.circleSize, Hockey.player2.color);
-
-        Hockey.drawCircle(Hockey.puck.x, Hockey.puck.y, Hockey.puckSize, Hockey.puck.color);
+        Hockey.player1.draw(Hockey.context);
+        Hockey.player2.draw(Hockey.context);
+        Hockey.puck.draw(Hockey.context);
 
         setTimeout(Hockey.draw, 50);
     },
