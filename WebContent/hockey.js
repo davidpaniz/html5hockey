@@ -56,8 +56,9 @@ var Hockey = {
 		Hockey.context = Hockey.rink.getContext("2d");
 
 		Hockey.rink.addEventListener('mousemove', Hockey.mouseMove, false);
-
-		Hockey.ws = new WebSocket('ws://localhost:8080/Hockey/sincronizar');
+		var server = location.href.replace(/https?/,'ws').replace(/game/, "sync");
+		console.log(server);
+		Hockey.ws = new WebSocket(server);
 		var ws = Hockey.ws;
 
 		ws.onopen = function() {
@@ -70,14 +71,15 @@ var Hockey = {
 			puckPos = newPos[0].split(",");
 			Hockey.puck.x = puckPos[0];
 			Hockey.puck.y = puckPos[1];
-			if (newPos[1]) {
-				player2Pos = newPos[1].split(",");
-				Hockey.player2.x = player2Pos[0];
-				Hockey.player2.y = Hockey.height - player2Pos[1];
-			}
+
+			player2Pos = newPos[1].split(",");
+			Hockey.player2.x = player2Pos[0];
+			Hockey.player2.y = player2Pos[1];
+
+			Hockey.draw();
 		};
 
-		Hockey.draw();
+		// Hockey.draw();
 	},
 
 	mouseMove : function(evt) {
@@ -95,8 +97,6 @@ var Hockey = {
 		Hockey.player1.draw(Hockey.context);
 		Hockey.player2.draw(Hockey.context);
 		Hockey.puck.draw(Hockey.context);
-
-		setTimeout(Hockey.draw, 50);
 	},
 	getMousePos : function(evt) {
 		var rect = Hockey.rink.getBoundingClientRect(), root = document.documentElement;

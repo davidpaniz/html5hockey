@@ -18,25 +18,31 @@ public class Game {
 	public Game() {
 		puckX = middle(width, puckSize);
 		puckY = middle(height, puckSize);
+		new Thread(new GameUpdater(this)).start();
 	}
 
 	private int middle(int totalSize, int elementSize) {
 		return totalSize / 2 - elementSize / 2;
 	}
 
-	// private int initialY(boolean isPlayer1) {
-	// if (isPlayer1) {
-	// return height - (height / 6);
-	// } else {
-	// return (height / 6);
-	// }
-	// }
+	private int initialY(boolean isPlayer1) {
+		if (isPlayer1) {
+			return height - (height / 6);
+		} else {
+			return (height / 6);
+		}
+	}
 
 	public void add(Player player) {
+		System.out.println("Add");
 		if (player1 == null) {
 			player1 = player;
+			player1.setInitialPosition(middle(width, playerSize),
+					initialY(true));
 		} else if (player2 == null) {
 			player2 = player;
+			player2.setInitialPosition(middle(width, playerSize),
+					initialY(false));
 		}
 	}
 
@@ -48,24 +54,10 @@ public class Game {
 		}
 	}
 
-	public void onMessage(String message, Player player) {
-		String[] split = message.split(",");
-		int playerX = Integer.parseInt(split[0]);
-		int playerY = Integer.parseInt(split[1]);
-		double sqrt = Math.sqrt((playerX - puckX) * (playerX - puckX)
-				+ (playerY - puckY) * (playerY - puckY));
-		if (sqrt < (puckSize + playerSize)) {
-			if (playerX < puckX) {
-				puckXSpeed = 5;
-			} else {
-				puckXSpeed = -5;
-			}
-			if (playerY < puckY) {
-				puckYSpeed = 5;
-			} else {
-				puckYSpeed = -5;
-			}
-		}
+	public void refresh() {
+		colissionCheck(player1);
+		colissionCheck(player2);
+
 		if (this.lastPuckUpdate + this.timeToUpdate < System
 				.currentTimeMillis()) {
 			puckX += puckXSpeed;
@@ -77,13 +69,32 @@ public class Game {
 				puckYSpeed *= -1;
 			}
 		}
-		String puckPosition = puckX + "," + puckY;
-		player.sendMessage(puckPosition);
 
-		if (player1 == player && player2 != null) {
-			player2.sendMessage(puckPosition + "|" + playerX + "," + playerY);
-		} else if (player2 == player && player1 != null) {
-			player1.sendMessage(puckPosition + "|" + playerX + "," + playerY);
+		String puckPosition = puckX + "," + puckY;
+		if (player1 != null && player2 != null) {
+			player1.sendMessage(puckPosition + "|" + player2.getCoordinate());
+			player2.sendMessage(puckPosition + "|" + player1.getCoordinate());
+		}
+	}
+
+	private void colissionCheck(Player player) {
+		if (player == null) {
+			return;
+		}
+		double sqrt = Math.sqrt((player.getX() - puckX)
+				* (player.getX() - puckX) + (player.getY() - puckY)
+				* (player.getY() - puckY));
+		if (sqrt < (puckSize + playerSize)) {
+			if (player.getX() < puckX) {
+				puckXSpeed = 5;
+			} else {
+				puckXSpeed = -5;
+			}
+			if (player.getY() < puckY) {
+				puckYSpeed = 5;
+			} else {
+				puckYSpeed = -5;
+			}
 		}
 	}
 
