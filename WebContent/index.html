@@ -7,13 +7,15 @@
             canvas {
                 border: 1px solid black;
             }
-            .red {
-            }
+			body { 
+				overflow-x: hidden; 
+				overflow-y: hidden; 
+			}            
         </style>
         <script src="/Hockey/hockey.js"></script>
     </head>
     <body>
-        <canvas id="rink" width="400" height="600"></canvas>
+        <canvas id="rink" width="400" height="600" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" ></canvas>
         <button onclick="Hockey.start();">Start!</button>
     </body>
 </html>

@@ -34,7 +34,7 @@ public class Game {
 	}
 
 	public void add(Player player) {
-		System.out.println("Add");
+//		System.out.println("Add");
 		if (player1 == null) {
 			player1 = player;
 			player1.setInitialPosition(middle(width, playerSize),

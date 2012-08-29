@@ -55,9 +55,12 @@ var Hockey = {
 		Hockey.rink = document.getElementById("rink");
 		Hockey.context = Hockey.rink.getContext("2d");
 
+		Hockey.rink.addEventListener('touchmove', Hockey.touchMove, false);
+		Hockey.rink.addEventListener('touchstart', Hockey.touchMove, false);
+		Hockey.rink.addEventListener('touchmove', Hockey.touchMove, false);
 		Hockey.rink.addEventListener('mousemove', Hockey.mouseMove, false);
 		var server = location.href.replace(/https?/,'ws').replace(/game/, "sync");
-		console.log(server);
+		//console.log(server);
 		Hockey.ws = new WebSocket(server);
 		var ws = Hockey.ws;
 
@@ -67,7 +70,7 @@ var Hockey = {
 
 		ws.onmessage = function(message) {
 			newPos = message.data.split("|");
-			console.log(newPos);
+//			console.log(newPos);
 			puckPos = newPos[0].split(",");
 			Hockey.puck.x = puckPos[0];
 			Hockey.puck.y = puckPos[1];
@@ -82,6 +85,13 @@ var Hockey = {
 		// Hockey.draw();
 	},
 
+	touchMove : function(evt) {
+		evt.preventDefault();
+		console.log(evt);
+		Hockey.mouseMove({clientX:evt.pageX, clientY:evt.pageY});
+		evt.stopPropagation();
+	},
+	
 	mouseMove : function(evt) {
 		var mousePos = Hockey.getMousePos(evt);
 
@@ -109,8 +119,17 @@ var Hockey = {
 			y : mouseY
 		};
 	}
-}
+};
 
 window.onload = function() {
 	Hockey.start();
+	document.addEventListener('touchmove', function(e) {
+		e.preventDefault();
+	},true);
+
+	window.addEventListener('touchmove', function(e) {
+		e.preventDefault();
+	},true);
 };
+
+

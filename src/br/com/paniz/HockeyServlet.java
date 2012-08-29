@@ -25,7 +25,7 @@ public class HockeyServlet extends WebSocketServlet {
 	@Override
 	public WebSocket doWebSocketConnect(HttpServletRequest req, String str) {
 		String gameId = req.getPathInfo();
-		System.out.println(gameId);
+//		System.out.println(gameId);
 		Player p = null;
 		if (games.containsKey(gameId)) {
 			Game game = games.get(gameId);

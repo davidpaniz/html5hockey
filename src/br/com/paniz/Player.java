@@ -36,7 +36,7 @@ public class Player implements OnTextMessage {
 
 	public void sendMessage(String message) {
 		try {
-			System.out.println(message);
+//			System.out.println(message);
 			this.connection.sendMessage(message);
 		} catch (IOException e) {
 			this.game.remove(this);
